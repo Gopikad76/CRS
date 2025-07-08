@@ -1,14 +1,25 @@
-# Use OpenJDK image
-FROM openjdk:17
+# Use OpenJDK 17 with Maven
+FROM maven:3.8.5-openjdk-17 AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy build jar to container
-COPY target/*.jar app.jar
+# Copy all files to container
+COPY . .
 
-# Expose port (change if your app runs on another port)
-EXPOSE 8050
+# Build the jar
+RUN mvn clean package -DskipTests
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Second stage: run the jar with a clean JDK image
+FROM openjdk:17
+
+WORKDIR /app
+
+# Copy jar from build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Run the jar
+CMD ["java", "-jar", "app.jar"]
+
+# Expose port (change if using different port in Spring Boot)
+EXPOSE 8080
