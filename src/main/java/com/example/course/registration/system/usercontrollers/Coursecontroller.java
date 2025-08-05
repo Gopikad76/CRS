@@ -14,7 +14,7 @@ import com.example.course.registration.system.model.Enrollment;
 import com.example.course.registration.system.services.Courseservices;
 
 @RestController
-@CrossOrigin(origins="http://127.0.0.1:3000")
+@CrossOrigin(origins="*")
 public class Coursecontroller {
 
     @Autowired
